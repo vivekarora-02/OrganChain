@@ -1,104 +1,100 @@
-import { useState } from "react";
+import React, { Component } from "react";
 import axios from "axios";
 import Top2 from "../Navbar/Top2";
 import "./styles.css";
 
+import { Message } from 'semantic-ui-react';
 
 
-function Hospital_login() {
 
-    const [valid, checkvalid] = useState(({
+
+class Hospital_login extends Component {
+
+    state = {
         username: '',
         password: '',
-        errMsg: '',
-    }));
+        errMsg: ''
+    }
 
-    const onSubmit = (event) => {
-
+    onSubmit = event => {
         event.preventDefault();
 
-        checkvalid({ errMsg: '' });
+        this.setState({ errMsg: '' });
 
-        const { username, password } = valid;
+        const { username, password } = this.state;
         const user = { username, password };
-        console.log(user);
 
-        axios.request("http://localhost:5002/api/hospitals/login", user)
-            .then(res => {
+        axios.post("http://localhost:5002/api/hospitals/login", user)
+            .then((res) => {
                 localStorage.setItem("isAuthenticated", "true");
                 window.localStorage.setItem("token", res.data.token);
-                window.location = "/hospital/dashboard";
-
-                console.log("login completed");
+                window.location = "/Main_page";
             })
-            .catch(err => checkvalid(...valid, { errMsg: err }));
-
-
-
+            .catch(err => this.setState({ errMsg: err.message }));
 
     }
 
-    const handleChange = (event) => {
-        checkvalid({ ...valid, [event.target.name]: event.target.value });
+    onChange = event => {
+        this.setState({ [event.target.name]: event.target.value });
     }
 
-    return (
-        <>
-            <Top2 />
-            <section class="hospital_login">
-                <div class="px-4 py-5 px-md-5 text-center text-lg-start" style={{ backgroundColor: "hsl(0, 0%, 96%)" }}>
-                    <div class="container">
-                        <div class="row gx-lg-5 align-items-center">
-                            <div class="col-lg-6 mb-5 mb-lg-0">
-                                <h1 class="my-5 display-3 fw-bold ls-tight">
+    render() {
+        return (
+            <>
+                <Top2 />
+                <section class="hospital_login">
+                    <div class="px-4 py-5 px-md-5 text-center text-lg-start" style={{ backgroundColor: "hsl(0, 0%, 96%)" }}>
+                        <div class="container">
+                            <div class="row gx-lg-5 align-items-center">
+                                <div class="col-lg-6 mb-5 mb-lg-0">
+                                    <h1 class="my-5 display-3 fw-bold ls-tight">
 
-                                    <span class="text-primary">Signup For hospital Login</span>
-                                </h1>
-                                <p style={{ color: "hsl(217, 10%, 50.8%)" }}>
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                    Eveniet, itaque accusantium odio, soluta, corrupti aliquam
-                                    quibusdam tempora at cupiditate quis eum maiores libero
-                                    veritatis? Dicta facilis sint aliquid ipsum atque?
-                                </p>
-                            </div>
+                                        <span class="text-primary">Signup For hospital Login</span>
+                                    </h1>
+                                    <p style={{ color: "hsl(217, 10%, 50.8%)" }}>
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                                        Eveniet, itaque accusantium odio, soluta, corrupti aliquam
+                                        quibusdam tempora at cupiditate quis eum maiores libero
+                                        veritatis? Dicta facilis sint aliquid ipsum atque?
+                                    </p>
+                                </div>
 
-                            <div class="col-lg-6 mb-5 mb-lg-0">
-                                <div class="card">
-                                    <div class="card-body py-5 px-md-5">
-                                        <form onSubmit={onSubmit}>
-                                            <div class="form-outline mb-4">
-                                                <input type="username" id="username" name="username" class="form-control" value={valid.username} onChange={handleChange} required />
-                                                <label class="form-label" for="username">Username</label>
-                                            </div>
+                                <div class="col-lg-6 mb-5 mb-lg-0">
+                                    <div class="card">
+                                        <div class="card-body py-5 px-md-5">
+                                            <form onSubmit={this.onSubmit} error={!!this.state.errMsg}>
+                                                <div class="form-outline mb-4">
+                                                    <input type="username" id="username" name="username" class="form-control" value={this.state.username} onChange={this.onChange} required />
+                                                    <label class="form-label" for="username">Username</label>
+                                                </div>
 
-                                            <div class="form-outline mb-4">
-                                                <input type="password" id="password" name="password" class="form-control" value={valid.password} onChange={handleChange} required />
-                                                <label class="form-label" for="form3Example4">Password</label>
-                                            </div>
-
-
-                                            <button type="submit" class="btn btn-primary btn-block mb-4" onSubmit={onSubmit}>
-                                                Sign up
-                                            </button>
-                                            {valid.errMsg &&
-                                                <h3 className="error"> {valid.errMsg} </h3>}
+                                                <div class="form-outline mb-4">
+                                                    <input type="password" id="password" name="password" class="form-control" value={this.state.password} onChange={this.onChange} required />
+                                                    <label class="form-label" for="form3Example4">Password</label>
+                                                </div>
 
 
-                                        </form>
+                                                <button type="submit" class="btn btn-primary btn-block mb-4" onSubmit={this.onSubmit}>
+                                                    Sign up
+                                                </button>
+
+                                            </form>
+                                            {
+                                                this.state.errMsg && this.state.errMsg.length > 0 ?
+                                                    <Message error header="Oops!!" content={this.state.errMsg} /> : <div />
+                                            }
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-        </>
-
-    );
-
-
-
+            </>
+        );
+    }
 
 }
 export default Hospital_login;

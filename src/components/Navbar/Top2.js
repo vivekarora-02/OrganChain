@@ -10,10 +10,9 @@ const Top2 = () => {
         <Navbar position="sticky" fixed="top" className='navbar fixed'>
             <Container className='trans'>
                 <Nav className="me-auto trans">
-                    <Link to="#about" className=' trans nav-link nav-link-ltr' smooth>Donor Login</Link>
+                    <Link to="/Donor_login" className=' trans nav-link nav-link-ltr' smooth>Donor Login</Link>
                     <Link to="/Donor_Register" className=' trans nav-link nav-link-ltr' smooth>Donor Register</Link>
                     <Link to="#" className='trans nav-link nav-link-ltr' smooth>Needy Login</Link>
-                    <Link to="/Needy_signup" className=' trans nav-link nav-link-ltr' smooth>Needy Register</Link>
                     <Link to="/Hospital_login" className='trans nav-link nav-link-ltr'>Partner with us (for Hospitals)</Link>
 
                 </Nav>

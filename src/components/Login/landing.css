@@ -1,9 +1,9 @@
-.common_login {
+.commn_login {
     background-color: transparent;
+    margin-top: 60px;
 }
 
-.common_login .initiate {
-    margin-top: 60px;
+.commn_login .initiate {
     text-align: center;
     font-family: 'Roboto', sans-serif;
     font-size: 70px;
@@ -14,7 +14,7 @@
     -webkit-background-clip: text;
 }
 
-.common_login .buttn:after {
+.commn_login .buttn:after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -26,7 +26,7 @@
     z-index: -2;
 }
 
-.common_login .buttn:before {
+.commn_login .buttn:before {
     content: '';
     position: absolute;
     bottom: 0;
@@ -39,21 +39,21 @@
     z-index: -1;
 }
 
-.common_login .buttn:hover {
+.commn_login .buttn:hover {
     color: #fff;
 }
 
-.common_login .buttn:hover:before {
+.commn_login .buttn:hover:before {
     width: 100%;
 }
 
-.common_login .login_btn {
+.commn_login .login_btn {
     display: flex;
     justify-content: center;
     align-items: center;
 
 }
 
-.common_login .text {
+.commn_login .text {
     text-align: center;
 }
