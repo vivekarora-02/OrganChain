@@ -28,6 +28,9 @@ class Hospital_login extends Component {
             .then((res) => {
                 localStorage.setItem("isAuthenticated", "true");
                 window.localStorage.setItem("token", res.data.token);
+
+
+
                 window.location = "/Main_page";
             })
             .catch(err => this.setState({ errMsg: err.message }));

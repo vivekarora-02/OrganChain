@@ -1,33 +1,32 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 import { Card, Segment, Header, Divider, Grid } from 'semantic-ui-react';
 
-class HospitalList extends Component {
-    state = {
-        hospitals: []
-    }
+function HospitalList(props) {
+    const [hospitals, setHospitals] = useState([]);
 
-    componentDidMount() {
-        var hospitals = [];
-        axios.get(`http://localhost:5002/api/hospitals/${this.props.match.params.city}`)
+    const { city } = useParams;
+
+    useEffect(() => {
+        axios.get(`http://localhost:5002/api/hospitals/${city}`)
             .then(res => {
-                for (let i = 0; i < res.data.length; i++) {
-                    const hospital = {
-                        address: `Address : ${res.data[i].address}`,
-                        city: res.data[i].city,
-                        name: res.data[i].username,
-                        contact: `Contact : ${res.data[i].contact}`,
-                        img: `../images/${res.data[i].img}`
+                const newHospitals = res.data.map(hospital => {
+                    return {
+                        address: `Address : ${hospital.address}`,
+                        city: hospital.city,
+                        name: hospital.username,
+                        contact: `Contact : ${hospital.contact}`,
+                        img: `../images/${hospital.img}`
                     }
-                    hospitals.push(hospital)
-                }
-                this.setState({ hospitals });
+                });
+                setHospitals(newHospitals);
             })
             .catch(err => console.log("Error:" + err));
-    }
+    }, [props.city]);
 
-    renderHospitals() {
-        var hospitals = this.state.hospitals.map(hospital => {
+    const renderHospitals = () => {
+        const hospitalCards = hospitals.map(hospital => {
             return {
                 image: hospital.img,
                 header: hospital.name,
@@ -35,24 +34,22 @@ class HospitalList extends Component {
                 description: hospital.address
             };
         });
-        return <Card.Group items={hospitals} centered />;
+        return <Card.Group items={hospitalCards} centered />;
     }
 
-    render() {
-        return (
-            <Grid centered columns={2} style={{ marginTop: '20px' }}>
-                <Grid.Column width={12}>
-                    <Segment>
-                        <Header as="h3" color="grey" style={{ textAlign: "center" }}>
-                            Please visit any one hospital from the given list, to get yourself approved!
-                        </Header>
-                        <Divider />
-                        {this.renderHospitals()}
-                    </Segment>
-                </Grid.Column>
-            </Grid>
-        );
-    }
+    return (
+        <Grid centered columns={2} style={{ marginTop: '20px' }}>
+            <Grid.Column width={12}>
+                <Segment>
+                    <Header as="h3" color="grey" style={{ textAlign: "center" }}>
+                        Please visit any one hospital from the given list, to get yourself approved!
+                    </Header>
+                    <Divider />
+                    {renderHospitals()}
+                </Segment>
+            </Grid.Column>
+        </Grid>
+    );
 }
 
 export default HospitalList;

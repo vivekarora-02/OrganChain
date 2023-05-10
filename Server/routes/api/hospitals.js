@@ -19,7 +19,11 @@ router.route('/login').post((req, res) => {
             if (!hospital) return res.status(400).json({ msg: 'User does not exist' });
             if (!hospital.validPassword(password)) return res.status(400).json({ msg: 'Invalid Credentials!' });
 
-            jwt.sign({ hospital }, 'Think=>Code=>Build=>Hack', (err, token) => {
+            const payload = {
+                name: hospital.username,
+                key: hospital.hospitalpublickey,
+            };
+            jwt.sign(payload, 'Think=>Code=>Build=>Hack', (err, token) => {
                 if (err) throw err;
                 res.json({
                     token: token

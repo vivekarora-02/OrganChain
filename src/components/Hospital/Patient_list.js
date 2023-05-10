@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import { Grid, Form, Segment, Header, Button, Icon, Divider, Message } from 'semantic-ui-react';
 import Hospital_nav from './Hospital_nav';
+import contract from '../../ethereum/web3';
+import Web3 from 'web3';
+
+const sha3 = require('js-sha3');
+const { toChecksumAddress } = require('ethereumjs-util');
 
 
 class PatientRecord extends Component {
@@ -15,26 +20,58 @@ class PatientRecord extends Component {
         this.setState({ [event.target.name]: event.target.value });
     }
 
-    // onSubmit = async (event) => {
-    //     event.preventDefault();
+    onSubmit = async (event) => {
+        event.preventDefault();
 
-    //     this.setState( { loading :true , errMsg :'' } );
+        this.setState({ loading: true, errMsg: '' });
 
-    //     const { publicKey} = this.state;
+        const { publicKey } = this.state;
+        const hash = sha3.keccak256(publicKey);
 
-    //     try{
-    //         const ipfsHash = await OrganChain.methods.getEMR(publicKey).call();
-    //         if(!ipfsHash)
-    //             throw Object.assign(
-    //                 new Error("Patient Doesn't Exists!")
-    //             );
-    //         this.setState({ipfsHash});
-    //     }
-    //     catch(err){
-    //         this.setState({ errMsg : err.message })
-    //     }
-    //     this.setState( { loading : false} );
-    // }
+        // Take the rightmost 160 bits of the hash value
+        const addressBytes = hash.slice(-20);
+
+        // Convert the address bytes to a hexadecimal string
+        const address = '0x' + Buffer.from(addressBytes).toString('hex');
+
+        // Use ethereumjs-util to convert the address to checksum format
+        const checksumAddress = toChecksumAddress(address);
+
+        if (typeof window.ethereum !== 'undefined') {
+            // Request the user's permission to connect to MetaMask
+            await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+            // Use MetaMask as the web3 provider
+            const web3 = new Web3(window.ethereum);
+
+            // Get the user's account
+            const accounts = await web3.eth.getAccounts();
+            const account = accounts[0];
+
+            try {
+                const ipfsHash = await contract.methods.getEMR(checksumAddress).send(
+                    {
+                        from: account,
+                        gas: 1000000
+                    }
+                );
+                if (!ipfsHash)
+                    throw Object.assign(
+                        new Error("Patient Doesn't Exists!")
+                    );
+                this.setState({ ipfsHash });
+            }
+            catch (err) {
+                this.setState({ errMsg: err.message })
+            }
+            this.setState({ loading: false });
+        }
+        else {
+            alert('Please install MetaMask to use this dApp');
+        }
+
+
+    }
 
     render() {
         return (
@@ -47,7 +84,7 @@ class PatientRecord extends Component {
                                 Get Patient's EMR
                             </Header>
                             <Divider />
-                            <Form>
+                            <Form onSubmit={this.onSubmit}>
                                 <Form.Input
                                     value={this.state.publicKey}
                                     onChange={this.onChange}

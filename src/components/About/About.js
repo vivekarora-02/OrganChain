@@ -45,8 +45,8 @@ const About = () => {
                 To be a part of this initiative
             </div>
             <div className='list-button'>
-                <Link to="/Login/Donor_Register" className='btn btn-primary button-71'>Register as Donor</Link>
-                <Link to="/Login/Needy_signup" className='btn btn-primary button-71'>Register as Needy</Link>
+                <Link to="/Donor_Register" className='btn btn-primary button-71'>Register as Donor</Link>
+                <Link to="/Needy_signup" className='btn btn-primary button-71'>Register as Needy</Link>
             </div>
 
 

@@ -4,8 +4,10 @@ import axios from 'axios';
 import 'semantic-ui-css/semantic.min.css';
 import Hospital_nav from './Hospital_nav';
 //import ipfs from '../../ipfs';
-import web3 from '../../ethereum/web3';
-import OrganChain from '../../ethereum/OrganD';
+import contract from '../../ethereum/web3';
+import Web3 from 'web3';
+const sha3 = require('js-sha3');
+const { toChecksumAddress } = require('ethereumjs-util');
 
 class ApproveDonor extends Component {
     state = {
@@ -23,17 +25,18 @@ class ApproveDonor extends Component {
 
 
     onChange = event => {
+        console.log(event.target.value);
         this.setState({ [event.target.name]: event.target.value });
     }
 
-    captureFile = event => {
-        const file = event.target.files[0];
-        const reader = new window.FileReader();
-        reader.readAsArrayBuffer(file);
-        reader.onloadend = () => {
-            this.setState({ buffer: Buffer(reader.result) });
-        }
-    }
+    // captureFile = event => {
+    //     const file = event.target.files[0];
+    //     const reader = new window.FileReader();
+    //     reader.readAsArrayBuffer(file);
+    //     reader.onloadend = () => {
+    //         this.setState({ buffer: Buffer(reader.result) });
+    //     }
+    // }
 
     onApprove = (event) => {
         event.preventDefault();
@@ -51,31 +54,62 @@ class ApproveDonor extends Component {
 
                 const data = JSON.stringify({ fname, lname, gender, city, phone, email });
                 console.log(data);
-                const buf = Buffer.from(data);
+                var result = "563jhjh"
+                this.setState({ ipfsHash: result });
+                result = "435353";
+                this.setState({ EMRHash: result });
+                if (typeof window.ethereum !== 'undefined') {
+                    // Request the user's permission to connect to MetaMask
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
 
-                // const result = await ipfs.files.add(buf);
-                // this.setState({ ipfsHash: result[0].hash });
-                // console.log(this.state.ipfsHash);
+                    // Use MetaMask as the web3 provider
+                    const web3 = new Web3(window.ethereum);
 
-                // const result1 = await ipfs.files.add(buffer);
-                // this.setState({ EMRHash: result1[0].hash });
-                // console.log(this.state.EMRHash);
-
-                try {
+                    // Get the user's account
                     const accounts = await web3.eth.getAccounts();
-                    await OrganChain.methods.addDonor(donorId, this.state.ipfsHash, this.state.EMRHash, organ, bloodgroup).send({
-                        from: accounts[0],
-                        gas: 1000000
-                    });
-                    this.setState({ successMsg: "Donor Approved !" })
+
+                    const account = accounts[0];
+                    //console.log(account);
+
+
+                    try {
+                        const hash = sha3.keccak256(this.state.donorId);
+
+                        // Take the rightmost 160 bits of the hash value
+                        const addressBytes = hash.slice(-20);
+
+                        // Convert the address bytes to a hexadecimal string
+                        const address = '0x' + Buffer.from(addressBytes).toString('hex');
+
+                        // Use ethereumjs-util to convert the address to checksum format
+                        const checksumAddress = toChecksumAddress(address);
+
+                        console.log(checksumAddress);
+
+                        const accounts = await web3.eth.getAccounts();
+                        await contract.methods.addDonor(checksumAddress, this.state.ipfsHash, this.state.EMRHash, organ, bloodgroup).send({
+                            from: accounts[0],
+                            gas: 1000000
+                        });
+                        this.setState({ successMsg: "Donor Approved !" })
+                    }
+                    catch (err) {
+                        this.setState({ errMsg: "Donor doesnt exist or already exists" })
+                    }
+                    this.setState({ loading: false });
                 }
-                catch (err) {
-                    this.setState({ errMsg: err.message })
+                else {
+                    alert('Please install MetaMask to use this dApp');
                 }
-                this.setState({ loading: false });
-            })
-            .catch(err => this.setState({ errMsg: err.message }));
+            }).catch(err => this.setState({ errMsg: err.message }));
+
     }
+
+
+
+    // ...
+
+
 
 
 
@@ -124,13 +158,13 @@ class ApproveDonor extends Component {
                                     placeholder='Donor Public Key'
                                     required
                                 />
-                                <Form.Input
+                                {/* <Form.Input
                                     onChange={this.captureFile}
                                     name="EMR"
                                     label="EMR"
                                     type="file"
                                     required
-                                />
+                                /> */}
                                 {
                                     this.state.errMsg && this.state.errMsg === "Donor Approved !" ?
                                         <Message success header="Sucess" content={this.state.successMsg} /> : <Message error header="Oops!!" content={this.state.errMsg} />

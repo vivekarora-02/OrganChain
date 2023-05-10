@@ -3,10 +3,18 @@ import { Form, Button, Grid, Segment, Header, Divider, Message } from 'semantic-
 import Hospital_nav from './Hospital_nav';
 import jwtDecode from 'jwt-decode';
 //import ipfs from '../../ipfs';
-import web3 from '../../ethereum/web3.js';
-import OrganChain from '../../ethereum/OrganD';
+import contract from '../../ethereum/web3';
+import Web3 from 'web3';
+//import client from '../../ipfs';
+//const ethUtil = require('ethereumjs-util');
+const sha3 = require('js-sha3');
+const { toChecksumAddress } = require('ethereumjs-util');
+//import client from '../../ipfs';
+
 //import EthCrypto from 'eth-crypto';
-import generateRandomAddress from './generate_key';
+
+// var ethers = require('ethers');
+// var crypto = require('crypto');
 
 class RegisterRecipient extends Component {
     state = {
@@ -33,53 +41,101 @@ class RegisterRecipient extends Component {
         this.setState({ loading: true, errMsg: '', successMsg: '' });
 
         const { fname, lname, gender, city, phone, email, bloodgroup, organ, buffer, publicKey } = this.state;
+        //console.log(fname);
 
-        try {
-            const data = JSON.stringify({ fname, lname, gender, city, phone, email });
+        if (typeof window.ethereum !== 'undefined') {
+            // Request the user's permission to connect to MetaMask
+            await window.ethereum.request({ method: 'eth_requestAccounts' });
 
-            const buf = Buffer.from(data);
+            // Use MetaMask as the web3 provider
+            const web3 = new Web3(window.ethereum);
 
-            var result = "Qm1d48aab25a1942cbc5af698bd610e408dcca54e8f710496a25a6cfda9d8c63dc";
-            this.setState({ ipfsHash: result });
-
-            result = "Qm1d48aab25a1942cbc5af698bd610e408dcca54e8f710496a25a6cfda9d8c63dc";
-            this.setState({ EMRHash: result });
-            // const paddedAddress = web3.utils.padLeft(web3.utils.toHex(publicKey), 40);
-            // const encodedAddress = web3.eth.abi.encodeParameter('address', paddedAddress);
-            // const hospital = await jwtDecode(window.localStorage.getItem("token"));
-            // const paddedAddress1 = web3.utils.padLeft(web3.utils.toHex(hospital.hospital.hospitalpublickey), 40);
-            // const encodedAddress1 = web3.eth.abi.encodeParameter('address', paddedAddress1);
-            const encodedAddress = "0xa9194E8954443c9736E6ba39bB7880853B9739b3";
-            const encodedAddress1 = "0x31f7F2FD46ae68620eca806c18bf75247f6F42fC";
+            // Get the user's account
             const accounts = await web3.eth.getAccounts();
-            await OrganChain.methods.addRecipient(encodedAddress, encodedAddress1, this.state.ipfsHash, this.state.EMRHash, organ, bloodgroup).send({
-                from: accounts[0],
-                gas: 1000000
-            });
-            this.setState({ successMsg: "Repient Registered Successfully!" })
+
+            const account = accounts[0];
+            //console.log(account);
+
+
+            try {
+                const data = JSON.stringify({ fname, lname, gender, city, phone, email });
+
+                const buf = Buffer.from(data);
+                //const buf = Buffer.from(data);
+
+                // var result = await client.files.add(buf);
+                // this.setState({ ipfsHash: result[0].hash });
+
+                // result = await client.files.add(buffer);
+                // this.setState({ EMRHash: result[0].hash });
+
+                //console.log(ipfsHash);
+                //console.log(EMRHash);
+
+                var result = "Qm1d4";
+
+                var result1 = "Qm1d";
+                this.setState({ EMRHash: result });
+
+                const hash = sha3.keccak256(this.state.publicKey);
+
+                // Take the rightmost 160 bits of the hash value
+                const addressBytes = hash.slice(-20);
+
+                // Convert the address bytes to a hexadecimal string
+                const address = '0x' + Buffer.from(addressBytes).toString('hex');
+
+                // Use ethereumjs-util to convert the address to checksum format
+                const checksumAddress = toChecksumAddress(address);
+
+                const token = localStorage.getItem('token');
+                const decodedToken = jwtDecode(token);
+                console.log(decodedToken);
+                const hospitalid = decodedToken.key;
+
+
+                await contract.methods.addRecipient(checksumAddress, hospitalid, result, result1, organ, bloodgroup).send({
+                    from: account,
+                    gas: 1000000
+                });
+                this.setState({ successMsg: "Repient Registered Successfully!" })
+                this.setState({ loading: false });
+
+                // Use the account for your contract interactions
+                // ...
+
+            }
+            catch (err) {
+                this.setState({ errMsg: "Cannot send data already present user" });
+                this.setState({ loading: false });
+            }
+
+            // Use the account for your contract interactions
+            // ...
+        } else {
+            // MetaMask is not installed, show an error message
+            alert('Please install MetaMask to use this dApp');
         }
-        catch (err) {
-            this.setState({ errMsg: err.message })
-        }
-        this.setState({ loading: false });
     }
 
-    // captureFile = event => {
-    //     const file = event.target.files[0];
-    //     const reader = new window.FileReader();
-    //     reader.readAsArrayBuffer(file);
-    //     reader.onloadend = () => {
-    //         this.setState({ buffer: Buffer(reader.result) });
-    //     }
-    // }
+
+    captureFile = event => {
+        const file = event.target.files[0];
+        const reader = new window.FileReader();
+        reader.readAsArrayBuffer(file);
+        reader.onloadend = () => {
+            this.setState({ buffer: Buffer(reader.result) });
+        }
+    }
 
     onChange = event => {
+        //console.log(event.target.value);
         this.setState({ [event.target.name]: event.target.value });
     }
 
     render() {
         return (
-            <>
+            <div>
                 <Hospital_nav />
                 <Grid centered columns={2} style={{ marginTop: '20px' }}>
                     <Grid.Column width={9}>
@@ -186,12 +242,12 @@ class RegisterRecipient extends Component {
                                         <option value='Pancreas'>Pancreas</option>
                                     </Form.Field>
                                 </Form.Group>
-                                <Form.Group widths={2}>
+                                <Form.Group widths={1}>
                                     <Form.Input
                                         value={this.state.publicKey}
                                         onChange={this.onChange}
                                         name="publicKey"
-                                        label="Recipient's Public Key"
+                                        label="Recipient's Public Key (enter a 40 bit key)"
                                         placeholder="Recipient's Public Key"
                                         required
                                     />
@@ -203,16 +259,18 @@ class RegisterRecipient extends Component {
                                         required
                                     />
                                 </Form.Group>
+
                                 <Message error header="Oops!" content={this.state.errMsg} />
                                 <Message success header="Success" content={this.state.successMsg} />
                                 <Segment basic textAlign={"center"}>
-                                    <Button>Submit</Button>
+                                    <Button loading={this.state.loading} positive type='submit'>Register</Button>
+
                                 </Segment>
                             </Form>
                         </Segment>
                     </Grid.Column>
                 </Grid>
-            </>
+            </div>
         );
     }
 }

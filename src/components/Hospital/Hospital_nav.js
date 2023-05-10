@@ -21,11 +21,8 @@ function Hospital_nav() {
     }
     return (
         <>
-            <SideNav
-                onClick={(event) => {
-                    // Add your code her
 
-                }}
+            <SideNav
             >
                 <SideNav.Toggle />
                 <SideNav.Nav defaultSelected="home">
@@ -60,7 +57,7 @@ function Hospital_nav() {
                             <NavLink to='/Patient_list'><i className="fa fa-fw fa-th-list" style={{ fontSize: '1.75em' }} /></NavLink>
                         </NavIcon>
                         <NavText>
-                            <NavLink to='/Patient_list'>Patient List</NavLink>
+                            <NavLink to='/Patient_list'>Patient EMR</NavLink>
                         </NavText>
                     </NavItem>
                     <NavItem eventKey="Transplant Match">
@@ -82,6 +79,7 @@ function Hospital_nav() {
 
                 </SideNav.Nav>
             </SideNav>
+
 
         </>
     );

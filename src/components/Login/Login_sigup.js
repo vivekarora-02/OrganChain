@@ -16,6 +16,7 @@ class DonorSignUp extends Component {
         bloodgroup: 'A+',
         organ: 'Eyes',
         errMsg: '',
+        succMsg: '',
         pass: '',
     }
 
@@ -29,8 +30,8 @@ class DonorSignUp extends Component {
         console.log(donor);
         axios.post("http://localhost:5002/api/donors/", donor)
             .then((res) => {
-                console.log("Donor Added Successfully");
-                window.location = "/hospital-list/" + city;
+
+                this.setState({ succMsg: "Donor Added Successfully" });
             })
             .catch(err => this.setState({ errMsg: err.message }));
 
@@ -116,13 +117,17 @@ class DonorSignUp extends Component {
                                         </div>
 
 
-                                        <Front />
+
 
                                         <input className="button" type="submit" value="Register" />
 
                                         {
                                             this.state.errMsg && this.state.errMsg.length > 0 ?
                                                 <Message error header="Oops!!" content={this.state.errMsg} /> : <div />
+                                        }
+                                        {
+                                            this.state.succMsg && this.state.succMsg.length > 0 ?
+                                                <Message header="Great!!" content={this.state.succMsg} /> : <div />
                                         }
                                     </form>
                                 </div>
