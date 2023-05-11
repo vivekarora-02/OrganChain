@@ -22,7 +22,9 @@ export default function Success() {
         <div id="success">
 
             <div class="nine">
-                <h1>LIFE STORY</h1>
+                <h1 className="second">
+                    <span><b>Success Stories</b></span>
+                </h1>
             </div>
             <section className='iteam_section mt-4 container'>
                 <div className="row mt-2 d-flex justify-content-around align-items-center">

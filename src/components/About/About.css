@@ -62,6 +62,7 @@
     color: transparent;
     background-clip: text;
     -webkit-background-clip: text;
+    padding: 100px;
 }
 
 .list-button {

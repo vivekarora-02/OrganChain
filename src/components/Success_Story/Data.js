@@ -37,13 +37,6 @@ const Fooddata = [
         imgdata: "https://www.organdonor.gov/sites/default/files/styles/large/public/organ-donor/learn/life-stories/life-cesar.jpg?itok=BVU4vZi3",
         somedata: "“I had two kidneys. I gave away one...one healthy kidney...I did what I wanted to do and what I had to do as a husband.” – Cesar",
     },
-    {
-        id: 7,
-        rname: "One Fortunate Mom Gave Her Son Life Twice",
-        imgdata: "https://www.organdonor.gov/sites/default/files/styles/large/public/organ-donor/learn/life-stories/life-story-danielle.jpg?itok=ScrWeTqZ",
-        somedata: "“Estevan was the best child anybody could have. He never met a stranger. He was an angel and a gentleman. It was an honor being his mother.” – Rosie, Estevan’s mother",
-    },
-
 ];
 
 export default Fooddata;

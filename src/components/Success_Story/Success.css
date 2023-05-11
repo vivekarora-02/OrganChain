@@ -1,7 +1,7 @@
 .nine {
+    padding: 50px;
     text-align: center;
     font-size: 50px;
-    text-transform: uppercase;
     color: #222;
     letter-spacing: 1px;
     font-family: "Playfair Display", serif;
@@ -95,4 +95,38 @@ body {
         margin-top: 12px;
         position: none;
     }
+}
+
+.second {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.second h1 {
+    font-size: 50px;
+    font-family: 'Lato';
+}
+
+h1.second {
+    font-weight: 350;
+}
+
+h1.second span {
+    position: relative;
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border-bottom: 1px solid mediumseagreen;
+}
+
+h1.second span:after {
+    content: '';
+    position: absolute;
+    bottom: calc(-100% - 1px);
+    margin-left: -10px;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    border-top: 1px solid mediumseagreen;
 }

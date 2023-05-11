@@ -1,155 +1,256 @@
-import { Component, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import Top2 from "../Navbar/Top2";
 import "./styles.css";
-import Web3 from "web3";
-import contract from "../../ethereum/web3";
-import "react-bootstrap";
-import './card.css';
-const sha3 = require('js-sha3');
-const { toChecksumAddress } = require('ethereumjs-util');
+import styled, { keyframes } from 'styled-components';
+
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+const CrispyText = styled.p`
+  color: #ad009f;
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  text-align: left;
+  margin-top: -10px;
+  animation: ${fadeIn} 1s ease-in-out;
+  transform: translateY(-20px);
+  animation-fill-mode: both;
+`;
+const glitterAnimation = keyframes`
+  0% { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
+`;
+
+const GlitterText = styled.p`
+  color: rgb(54, 152, 235);
+  font-family: Arial, sans-serif;
+  font-size: 30px;
+  background-image: linear-gradient(45deg, #00f, #f0f, #0ff);
+  background-size: 200% auto;
+  animation: ${glitterAnimation} 2s linear infinite;
+  -webkit-background-clip: text;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-text-fill-color: transparent;
+`;
 
 
 
+function Donor_login() {
 
-class Donor_login extends Component {
-
-    state = {
+    const [valid, checkvalid] = useState(({
         public_key: '',
         errMsg: '',
-        ipfsHash: '',
-        organ: '',
-        bloodgroup: '',
-        matchfound: false,
-        matchid: '',
-    }
+    }));
 
-
-    onSubmit = async (event) => {
+    const onSubmit = (event) => {
 
         event.preventDefault();
-
-
-        const key = this.state.public_key;
-        const hash = sha3.keccak256(key);
-
-        // Take the rightmost 160 bits of the hash value
-        const addressBytes = hash.slice(-20);
-
-        // Convert the address bytes to a hexadecimal string
-        const address = '0x' + Buffer.from(addressBytes).toString('hex');
-
-        // Use ethereumjs-util to convert the address to checksum format
-        const checksumAddress = toChecksumAddress(address);
-
-        if (typeof window.ethereum !== 'undefined') {
-            // Request the user's permission to connect to MetaMask
-            await window.ethereum.request({ method: 'eth_requestAccounts' });
-
-            // Use MetaMask as the web3 provider
-            const web3 = new Web3(window.ethereum);
-
-            // Get the user's account
-            const accounts = await web3.eth.getAccounts();
-            const account = accounts[0];
-
-            try {
-                contract.methods.getDonor(checksumAddress).call()
-                    .then(result => {
-                        const ipfsHash = result[0];
-                        const organ = result[1];
-                        const blood = result[2];
-                        const matchFound = result[3];
-                        const recipientId = result[4];
-                        this.setState({ ipfsHash: ipfsHash });
-                        this.setState({ organ: organ });
-                        this.setState({ bloodgroup: blood });
-                        this.setState({ matchfound: matchFound });
-                        this.setState({ matchid: recipientId });
-                    })
-                    .catch(err => console.log(err));
-
-            }
-            catch {
-                this.setState({ errMsg: "bad request" });
-            }
-        }
-
-        else {
-            alert('Please install MetaMask to use this dApp');
-        }
-
     }
 
-    handleChange = (event) => {
-        this.setState({ [event.target.name]: event.target.value });
+    const handleChange = (event) => {
+        checkvalid({ ...valid, [event.target.name]: event.target.value });
     }
 
-    render() {
+    return (
+        <>
+            <Top2 />
+            <section class="hospital_login">
+                <div class="px-4 py-5 px-md-5 text-center text-lg-start" style={{ backgroundColor: "hsl(0, 0%, 96%)" }}>
+                    <div class="container">
+                        <div class="row gx-lg-5 align-items-center">
+                            <div class="col-lg-6 mb-5 mb-lg-0">
+                                <h1 class="my-5 display-3 fw-bold ls-tight">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    
+                                    <span class="text-primary">Login for Donor</span>
+                                    <p></p>
+                           <p></p>
+                           <p></p>
+                           <p></p>
+                           <p></p>
+                           
+                                </h1>
+                                 
+                                  
+                             <CrispyText> 
+                               
+                           <p></p>
+                           <p></p>
+                           <p></p>
+                           <p></p>
+                           
+                            
+                            <>Your compassion and empathy inspire others to follow in your footsteps. </>
+                            </CrispyText>
+                            
+                            </div>
 
-        return (
-            <>
-                <Top2 />
-                <section class="hospital_login">
-                    <div class="px-4 py-5 px-md-5 text-center text-lg-start" style={{ backgroundColor: "hsl(0, 0%, 96%)" }}>
-                        <div class="container">
-                            <div class="row gx-lg-5 align-items-center">
-                                <div class="col-lg-6 mb-5 mb-lg-0">
-                                    <h1 class="my-5 display-3 fw-bold ls-tight">
+                            <div class="col-lg-6 mb-5 mb-lg-0">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <div class="card">
+                                    <div class="card-body py-5 px-md-5">
+                                        <form onSubmit={onSubmit}>
+                                            <div class="form-outline mb-4">
+                                                <input type="string" id="public_key" name="public_key" class="form-control" value={valid.public_key} onChange={handleChange} required />
+                                                <label class="form-label" for="public_key">Public Key</label>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary btn-block mb-4" onSubmit={onSubmit}>
+                                                Sign up
+                                            </button>
+                                            {valid.errMsg &&
+                                                <h3 className="error"> {valid.errMsg} </h3>}
 
-                                        <span class="text-primary">Check Donor Info and Status</span>
-                                    </h1>
-                                    <p style={{ color: "hsl(217, 10%, 50.8%)" }}>
-                                        “After I die if I am buried I will rot. If I am burnt I will become ash but if my body is donated I will live to give life and happiness to many."
-                                    </p>
-                                </div>
 
-                                <div class="col-lg-6 mb-5 mb-lg-0">
-                                    <div class="card">
-                                        <div class="card-body py-5 px-md-5">
-                                            <form onSubmit={this.onSubmit}>
-                                                <div class="form-outline mb-4">
-                                                    <input type="string" id="public_key" name="public_key" class="form-control" value={this.state.public_key} onChange={this.handleChange} required />
-                                                    <label class="form-label" for="public_key">Public Key</label>
-                                                </div>
-                                                <button type="submit" class="btn btn-primary btn-block mb-4" onSubmit={this.onSubmit}>
-                                                    Sign up
-                                                </button>
-                                                {this.state.errMsg &&
-                                                    <h3 className="error"> {this.state.errMsg} </h3>}
-
-
-                                            </form>
-                                        </div>
+                                        </form>
                                     </div>
                                 </div>
+                                
                             </div>
+                            <p></p>
+                           <p></p>
+                           <p></p>
+                           <p></p>
+                           <center>
+                            
+                             <GlitterText>Thank you for your incredible generosity! You are changing lives!
+                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                   
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                  
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                             </GlitterText>
+                                    </center>
+                                                           
                         </div>
                     </div>
-                </section>
+                </div>
+            </section>
 
-                {this.state.organ && this.state.organ.length >= 1 ?
-                    <div class="alert alert col-md donor_id" style={{ marginLeft: "40px", marginRight: "20px" }} role="alert">
-                        <h4 class="alert-heading" style={{ textAlign: "center", fontSize: "3em", color: "#2c3e50" }}>Donor Information </h4>
-                        <div class="card " style={{ maxWidth: "500px", marginLeft: "25vw" }}>
-                            <div class="card-body">
-                                <h3 class="card-subtitle mb-2 text-muted" style={{ color: "#34495e" }}>Organ Needed: {this.state.organ}</h3>
-                                <h3 class="card-subtitle mb-2 text-muted" style={{ color: "#34495e" }}>Blood Group: {this.state.bloodgroup}</h3>
-                                <h3 class="card-subtitle mb-2 text-muted" style={{ color: "#34495e" }}>Match Found: {this.state.matchfound == true ? `Yes` : `No`}</h3>
-                                <h3 class="card-subtitle mb-2 text-muted" style={{ color: "#34495e" }}>Recipient ID: {this.state.matchfound == true ? `Recipient id: ${this.state.recipientId}` : ``}</h3>
-                            </div>
-                        </div>
-                    </div>
-                    : <div />
-                }
+        </>
 
-            </>
-
-        );
+    );
 
 
 
-    }
+
 }
 export default Donor_login;
 

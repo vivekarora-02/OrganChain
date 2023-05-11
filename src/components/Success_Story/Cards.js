@@ -1,38 +1,31 @@
-import React from 'react'
-import Card from 'react-bootstrap/Card'
+import React from 'react';
+import Card from 'react-bootstrap/Card';
+import './Cards.css'; // Import custom CSS file for styling
 
 const Cards = ({ data }) => {
-    return (
-        <>
-            {
-                data.map((element, k) => {
-                    return (
-                        <>
-                            <Card style={{ width: '22rem', border: "none" }} className="hove mb-4">
-                                <Card.Img variant="top" className='cd' src={element.imgdata} />
+  return (
+    <div className="cards-container">
+      {data.map((element, k) => {
+        return (
+          <Card key={k} className="custom-card">
+            <Card.Img variant="top" className="card-image" src={element.imgdata} />
 
-                                <div className="card_body">
-                                    <div className="upper_data d-flex justify-content-between align-items-center">
-                                        <h4 className='mt-2'>{element.rname}</h4>
+            <div className="card-body">
+              <div className="upper-data">
+                <h4 className="card-title">{element.rname}</h4>
+              </div>
 
-                                    </div>
+              <div className="extra"></div>
 
+              <div className="last-data">
+                <p>{element.somedata}</p>
+              </div>
+            </div>
+          </Card>
+        );
+      })}
+    </div>
+  );
+};
 
-                                    <div className="extra"></div>
-
-                                    <div className="last_data d-flex justify-content-between align-items-center">
-                                        <p>{element.somedata}</p>
-                                    </div>
-                                </div>
-
-                            </Card>
-                        </>
-                    )
-                })
-            }
-
-        </>
-    )
-}
-
-export default Cards
+export default Cards;
